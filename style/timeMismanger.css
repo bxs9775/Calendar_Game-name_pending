@@ -1,0 +1,52 @@
+body{
+  font-size: 1em;  
+}
+
+table{
+    background-color: #aaa;
+}
+
+tr{
+    height: 80px;
+}
+
+th,td{
+    width: 160px;
+}
+
+td{
+    background-color: #eee;
+}
+
+#canvas{
+    position: absolute;
+    left: 6px;
+    top: 80px;
+    z-index: 0;
+}
+
+#dragCanvas{
+    position: absolute;
+    left: 6px;
+    top: 80px;
+    z-index: 1;
+}
+
+#dragCanvas p{
+    width: 100%;
+    height:100%
+    background-color: #aaa;
+    
+    text-align: center;
+    vertical-align: middle;
+    
+    font-size: 2em;
+    font-weight: bold;
+}
+
+#calendar{
+    position: absolute;
+    left: 6px;
+    top: 80px;
+    z-index: -1;
+}
