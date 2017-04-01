@@ -2,6 +2,10 @@ body{
   font-size: 1em;  
 }
 
+h1,h2{
+    margin: 6px;
+}
+
 table{
     background-color: #aaa;
 }
@@ -19,16 +23,26 @@ td{
 }
 
 #canvas{
+    border: 2px solid grey;
     position: absolute;
     left: 6px;
     top: 80px;
     z-index: 0;
 }
 
+/*
 #dragCanvas{
     position: absolute;
     left: 6px;
     top: 80px;
+    z-index: 1;
+}
+*/
+
+#helpButton{
+    position: absolute;
+    left: 1060px;
+    top: 90px;
     z-index: 1;
 }
 
@@ -46,7 +60,9 @@ td{
 
 #calendar{
     position: absolute;
+    padding: 10px;
     left: 6px;
     top: 80px;
     z-index: -1;
 }
+

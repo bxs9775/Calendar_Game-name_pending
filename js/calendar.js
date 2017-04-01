@@ -54,7 +54,7 @@ app.calendar = {
         //this.timeslot = undefined;
         
         ///Draws this calendar item.
-        this.Draw = function(ctx){
+        this.draw = function(ctx){
             ctx.save();
             
             //draw rect
