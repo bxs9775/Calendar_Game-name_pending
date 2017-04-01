@@ -12,7 +12,8 @@ app.game = {
         PADDING: 5
     }),
     GAME_CONST: Object.freeze({
-        INIT_TIME: 10
+        INIT_TIME: 10,
+        NUM_APPOINTMENTS: 4
     }),
     
     //Drawing canvas
@@ -45,6 +46,15 @@ app.game = {
     level: 0,
     
     //Calendar
+    //calendar container (not sure whether to handle this here or in calendar.js)
+    calendar: 
+    [[false,false,false,false,false],
+     [false,false,false,false,false],
+     [false,false,false,false,false],
+     [false,false,false,false,false],
+     [false,false,false,false,false],
+     [false,false,false,false,false]],
+    appointments: [],
     
     //--------------------CONTROL METHODS--------------------//
     //Sets up the game for the first time
@@ -72,8 +82,6 @@ app.game = {
         }
         this.weekHeader = document.querySelector("#calendar h2");
         
-        
-        
         this.gameState = app.game.GAME_STATES.INSTRUCTIONS;
         
         this.newLevel();
@@ -85,9 +93,20 @@ app.game = {
     ///Cleans up level and resets values
     newLevel: function(){
         this.level++;
-        this.timeLeft = 15;
+        
+        this.appointments = [];
+        var numAppointments = this.GAME_CONST.NUM_APPOINTMENTS;
+        var nextHeight = 50;
+        for(var i = 0; i < numAppointments;i++){
+            var newLength = Math.floor((Math.random()*2)%2)+1;
+            var newAppointment = new this.calendar.CalendarItem("Meeting",1010,nextHeight,newLength,"Yellow",undefined,undefined);
+            this.appointments.push(newAppointment);
+            nextHeight += 100;
+        }
+        console.dir(this.appointments);
         
         this.weekHeader.innerHTML = "Week " + this.level + ":";
+        this.timeLeft = 15;
     },
     
     //Resets values to defaults and prepares for a new game
@@ -128,9 +147,9 @@ app.game = {
         switch(this.gameState){
             case this.GAME_STATES.PLAYING:
                 this.timeLeft -= this.deltaTime;
-                if(this.timeLeft <= 0){
+                /*if(this.timeLeft <= 0){
                     this.newLevel();
-                }
+                }*/
                 break;
         }
         
@@ -155,6 +174,10 @@ app.game = {
         switch(this.gameState){
             case this.GAME_STATES.PLAYING:
                 this.clearCanvas();
+                var listSize = this.appointments.length;
+                for(var i = 0; i < listSize; i++){
+                    this.appointments[i].draw(this.ctx);
+                }
                 break;
         }
         //draw HUD once everything else is drawn

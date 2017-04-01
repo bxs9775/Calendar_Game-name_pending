@@ -30,15 +30,6 @@ td{
     z-index: 0;
 }
 
-/*
-#dragCanvas{
-    position: absolute;
-    left: 6px;
-    top: 80px;
-    z-index: 1;
-}
-*/
-
 #helpButton{
     position: absolute;
     left: 1060px;

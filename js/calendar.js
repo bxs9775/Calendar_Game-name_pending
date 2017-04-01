@@ -3,19 +3,13 @@
 var app = app || {};
 
 app.calendar = {
-    //calendar structure
-    calendar: 
-    [[false,false,false,false,false],
-     [false,false,false,false,false],
-     [false,false,false,false,false],
-     [false,false,false,false,false],
-     [false,false,false,false,false],
-     [false,false,false,false,false]],
+    
     //Constants
     CALENDAR_CONST: Object.freeze({
         WIDTH: 160,
         HEIGHT: 80
     }),
+    
     //Days/hours - currently unused
     DAYS: Object.freeze({
         MON: 0,
@@ -58,23 +52,28 @@ app.calendar = {
             ctx.save();
             
             //draw rect
-            ctx.globalAlpha = 0.4;
+            ctx.globalAlpha = 0.6;
             ctx.fillStyle = this.color;
             
-            ctx.fillRect(this.location.x,this.location.y,this.CALENDAR_CONST.WIDTH,this.length*this.CALENDAR_CONST.HEIGHT);
+            ctx.fillRect(this.location.x,this.location.y,app.calendar.CALENDAR_CONST.WIDTH,this.length*app.calendar.CALENDAR_CONST.HEIGHT);
             
             //draw text
             ctx.globalAlpha = 1.0;
             ctx.font = app.game.GUI.FONT;
             ctx.fillStyle = app.game.GUI.FONT_COLOR;
-            var text = name + "\nLength: " + this.length + " hour(s)";
+            ctx.fillText(name,x+app.game.GUI.PADDING,y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*1);
+            ctx.fillText("Length: " + this.length + " hour(s)",x+app.game.GUI.PADDING,y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*2.1);
             if(this.success){
-                text = text + "\nSuccess: " + this.success.string;
+                ctx.fillText("Success: " + this.success.string,x+app.game.GUI.PADDING,y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*3.2);
             }
             if(this.failure){
-                text = text + "\nFailure: " + this.failure.string;
+                ctx.fillText("Failure: " + this.failure.string,x+app.game.GUI.PADDING,y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*4.3);
             }
-            ctx.fillText(text,x+app.game.GUI.PADDING,y+app.game.GUI.PADDING);
+            
+            //draw stroke
+            ctx.strokeStyle = "black";
+            ctx.lineWidth = 1;
+            ctx.strokeRect(this.location.x,this.location.y,app.calendar.CALENDAR_CONST.WIDTH,this.length*app.calendar.CALENDAR_CONST.HEIGHT);
             
             ctx.restore();
         }
