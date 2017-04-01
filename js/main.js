@@ -18,7 +18,10 @@ app.game = {
     //Drawing canvas
     canvas: undefined,
     ctx: undefined,
+    
+    //HTML elements
     helpButton: undefined,
+    weekHeader: undefined,
     
     //game parameters
     life: 0,
@@ -39,6 +42,9 @@ app.game = {
     }),
     gameState: undefined,
     lastState: undefined,
+    level: 0,
+    
+    //Calendar
     
     //--------------------CONTROL METHODS--------------------//
     //Sets up the game for the first time
@@ -64,11 +70,13 @@ app.game = {
                 }
             }
         }
+        this.weekHeader = document.querySelector("#calendar h2");
         
         
         
         this.gameState = app.game.GAME_STATES.INSTRUCTIONS;
         
+        this.newLevel();
         this.newGame();
         
         this.update();
@@ -76,7 +84,10 @@ app.game = {
     
     ///Cleans up level and resets values
     newLevel: function(){
+        this.level++;
+        this.timeLeft = 15;
         
+        this.weekHeader.innerHTML = "Week " + this.level + ":";
     },
     
     //Resets values to defaults and prepares for a new game
@@ -91,9 +102,16 @@ app.game = {
         //cancels animations
         cancelAnimationFrame(app.game.animationID);
         
+        if(newState == this.GAME_STATES.PAUSED){
+            helpButton.style.display = "none";
+        } else{
+            helpButton.style.display = "block";
+        }
+        
         //switches states
         this.lastState = this.gameState;
         this.gameState = newState;
+        
         
         //resumes animating
         this.update();
@@ -104,6 +122,17 @@ app.game = {
     update: function(){
         //sets up the update method for the next frame
         this.animationID = window.requestAnimationFrame(this.update.bind(this));
+        
+        this.calcDeltaTime();
+        
+        switch(this.gameState){
+            case this.GAME_STATES.PLAYING:
+                this.timeLeft -= this.deltaTime;
+                if(this.timeLeft <= 0){
+                    this.newLevel();
+                }
+                break;
+        }
         
         //finally draw the frame
         this.draw();
@@ -117,14 +146,16 @@ app.game = {
             this.deltaTime = 0;
             return;
         }
-        this.deltaTime = this.currTime - this.lastTime;
+        this.deltaTime = (this.currTime - this.lastTime)/1000;
     },
     
     //--------------------DRAWING--------------------//
     //Draws the current framw of the game
     draw: function(){
-        if(this.gameState == this.GAME_STATES.PLAYING){
-            this.clearCanvas();
+        switch(this.gameState){
+            case this.GAME_STATES.PLAYING:
+                this.clearCanvas();
+                break;
         }
         //draw HUD once everything else is drawn
         this.drawHUD();
@@ -142,12 +173,12 @@ app.game = {
             ctx.fillStyle = this.GUI.FONT_COLOR;
         }
         
+        ctx.fillText("Time: " + this.timeLeft.toFixed(2),this.ctx.canvas.width-120,this.ctx.canvas.height-90);
         ctx.fillText("Life: " + this.life,this.ctx.canvas.width-120,this.ctx.canvas.height-60);
         ctx.fillText("Work: " + this.work,this.ctx.canvas.width-120,this.ctx.canvas.height-30);
         
         switch(this.gameState){
             case this.GAME_STATES.PLAYING:
-                ctx.fillText("Time: " + this.timeLeft,this.ctx.canvas.width-120,this.ctx.canvas.height-90);
                 break;
             case this.GAME_STATES.PAUSED:
                 ctx.textAlign = "center";
