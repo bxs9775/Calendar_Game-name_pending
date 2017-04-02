@@ -128,7 +128,8 @@ app.game = {
             this.appointments.push(newAppointment);
             nextHeight += 100;
         }
-        console.dir(this.appointments);
+        
+        this.resetCalendar();
         
         this.weekHeader.innerHTML = "Week " + this.level + ":";
         this.timeLeft = 15;
@@ -136,8 +137,6 @@ app.game = {
     
     //resets values to defaults and prepares for a new game
     newGame: function(){
-        console.dir(this.calendarArr);
-        
         this.life = 5;
         this.work = 5;
         this.timeBonus = 0;
@@ -169,7 +168,7 @@ app.game = {
         var calendarWidth = this.calendarArr[0].length;
         for(var i = 0; i < calendarHeight; i++){
             for(var j = 0; j < calendarWidth; j++){
-                calendarArr[i][j] = false;
+                this.calendarArr[i][j] = false;
             }
         }
     },
@@ -185,9 +184,9 @@ app.game = {
         switch(this.gameState){
             case this.GAME_STATES.PLAYING:
                 this.timeLeft -= this.deltaTime;
-                /*if(this.timeLeft <= 0){
+                if(this.timeLeft <= 0){
                     this.newLevel();
-                }*/
+                }
                 break;
         }
         
@@ -296,25 +295,26 @@ app.game = {
         this.appointments[this.selectedItem].beingDragged = false;
         
         var itemRect = item.getRectangle();
-        console.dir(this.calendarRect);
-        console.dir(itemRect);
         if(rectanglesIntersect(itemRect,this.calendarRect)){
-            console.log("intersection");
             var calX = (itemRect.x < this.calendarRect.x)?0:(Math.floor((itemRect.x-this.calendarRect.x)/this.calendar.CALENDAR_CONST.WIDTH));
             var calY = (itemRect.y < this.calendarRect.y)?0:(Math.floor((itemRect.y-this.calendarRect.y)/this.calendar.CALENDAR_CONST.HEIGHT));
             var spotOpen = true;
-            for(var i = 0; i < item.length; i++){
-                if(this.calendarArr[calX][calY+i]){
-                    spotOpen = false;
+            if((calY+(item.length)) > this.calendarArr.length){
+                spotOpen = false;
+            }else{
+                for(var i = 0; i < item.length; i++){
+                    if(this.calendarArr[calY+i][calX]){
+                        spotOpen = false;
+                    }
                 }
             }
             
             if(spotOpen){
                 this.appointments[this.selectedItem].scheduled = true;
-                this.appointments[this.selectedItem].location.x = this.calendarRect.x + calX * (this.calendar.CALENDAR_CONST.WIDTH+2)+1;
-                this.appointments[this.selectedItem].location.y = this.calendarRect.y + calY * (this.calendar.CALENDAR_CONST.HEIGHT+2)+1;
+                this.appointments[this.selectedItem].location.x = this.calendarRect.x + calX * (this.calendar.CALENDAR_CONST.WIDTH+4)+4;
+                this.appointments[this.selectedItem].location.y = this.calendarRect.y + calY * (this.calendar.CALENDAR_CONST.HEIGHT+4)+4;
                 for(var i = 0; i < item.length; i++){
-                    this.calendarArr[calX][calY+i] = true;
+                    this.calendarArr[calY+i][calX] = true;
                 }
             }
         }
