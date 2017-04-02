@@ -78,5 +78,14 @@ app.calendar = {
             
             ctx.restore();
         }
+        
+        this.getRectangle = function(){
+            return {
+                x: this.location.x,
+                y: this.location.y,
+                width: app.calendar.CALENDAR_CONST.WIDTH,
+                height: (app.calendar.CALENDAR_CONST.HEIGHT * this.length)
+            };
+        }
     },
 };
