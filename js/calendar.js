@@ -43,6 +43,7 @@ app.calendar = {
         this.color = color;
         this.success = success;
         this.failure = failure;
+        this.beingDragged = false;
         this.scheduled = false;
         //--OR--//
         //this.timeslot = undefined;
@@ -61,13 +62,13 @@ app.calendar = {
             ctx.globalAlpha = 1.0;
             ctx.font = app.game.GUI.FONT;
             ctx.fillStyle = app.game.GUI.FONT_COLOR;
-            ctx.fillText(name,x+app.game.GUI.PADDING,y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*1);
-            ctx.fillText("Length: " + this.length + " hour(s)",x+app.game.GUI.PADDING,y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*2.1);
+            ctx.fillText(name,this.location.x+app.game.GUI.PADDING,this.location.y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*1);
+            ctx.fillText("Length: " + this.length + " hour(s)" ,this.location.x+app.game.GUI.PADDING,this.location.y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*2.1);
             if(this.success){
-                ctx.fillText("Success: " + this.success.string,x+app.game.GUI.PADDING,y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*3.2);
+                ctx.fillText("Success: " + this.success.string,this.location.x+app.game.GUI.PADDING,this.location.y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*3.2);
             }
             if(this.failure){
-                ctx.fillText("Failure: " + this.failure.string,x+app.game.GUI.PADDING,y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*4.3);
+                ctx.fillText("Failure: " + this.failure.string,this.location.x+app.game.GUI.PADDING,this.location.y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*4.3);
             }
             
             //draw stroke

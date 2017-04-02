@@ -45,7 +45,7 @@ app.game = {
     lastState: undefined,
     level: 0,
     
-    //Calendar
+    //calendar
     //calendar container (not sure whether to handle this here or in calendar.js)
     calendar: 
     [[false,false,false,false,false],
@@ -55,15 +55,19 @@ app.game = {
      [false,false,false,false,false],
      [false,false,false,false,false]],
     appointments: [],
+    selectedItem: -1,
     
     //--------------------CONTROL METHODS--------------------//
     //Sets up the game for the first time
     setup: function(){
+        //canvas objects
         this.canvas = document.querySelector("#canvas");
         this.ctx = this.canvas.getContext("2d");
         
+        //font/drawing
         this.ctx.font = this.GUI.FONT;
         
+        //buttons and GUI
         this.helpButton = document.querySelector("#helpButton");
         this.helpButton.onclick = function(e){
             if(app.game.gameState == app.game.GAME_STATES.PLAYING || app.game.gameState == app.game.GAME_STATES.GAME_OVER){
@@ -82,24 +86,34 @@ app.game = {
         }
         this.weekHeader = document.querySelector("#calendar h2");
         
+        //mouse and keyboard events
+        this.canvas.onmousedown = this.doMousedown.bind(this);
+        this.canvas.onmousemove = this.doMousedrag.bind(this);
+        this.canvas.onmouseup = this.doMouseup.bind(this);
+        
+        //game states
         this.gameState = app.game.GAME_STATES.INSTRUCTIONS;
         
+        //starting new game and level
         this.newLevel();
         this.newGame();
         
+        //starts game loop
         this.update();
     },
     
-    ///Cleans up level and resets values
+    ///cleans up level and resets values
     newLevel: function(){
         this.level++;
         
+        this.selectedItem = -1;
         this.appointments = [];
         var numAppointments = this.GAME_CONST.NUM_APPOINTMENTS;
         var nextHeight = 50;
         for(var i = 0; i < numAppointments;i++){
-            var newLength = Math.floor((Math.random()*2)%2)+1;
+            var newLength = Math.round(getRandom(1,2));
             var newAppointment = new this.calendar.CalendarItem("Meeting",1010,nextHeight,newLength,"Yellow",undefined,undefined);
+            Object.seal(newAppointment);
             this.appointments.push(newAppointment);
             nextHeight += 100;
         }
@@ -109,14 +123,14 @@ app.game = {
         this.timeLeft = 15;
     },
     
-    //Resets values to defaults and prepares for a new game
+    //resets values to defaults and prepares for a new game
     newGame: function(){
         this.life = 5;
         this.work = 5;
         this.timeBonus = 0;
     },
     
-    //Changes the game state
+    //changes the game state
     changeGameState: function(newState){
         //cancels animations
         cancelAnimationFrame(app.game.animationID);
@@ -137,7 +151,7 @@ app.game = {
     },
     
     //--------------------GAME LOOP--------------------//
-    //Runs once a frame and updates game logic
+    //runs once a frame and updates game logic
     update: function(){
         //sets up the update method for the next frame
         this.animationID = window.requestAnimationFrame(this.update.bind(this));
@@ -157,7 +171,7 @@ app.game = {
         this.draw();
     },
     
-    //Calculates delta time
+    //calculates delta time
     calcDeltaTime: function(){
         this.lastTime = this.currTime;
         this.currTime = performance.now();
@@ -169,7 +183,7 @@ app.game = {
     },
     
     //--------------------DRAWING--------------------//
-    //Draws the current framw of the game
+    //draws the current framw of the game
     draw: function(){
         switch(this.gameState){
             case this.GAME_STATES.PLAYING:
@@ -184,7 +198,7 @@ app.game = {
         this.drawHUD();
     },
     
-    //Draws the HUD
+    //draws the HUD
     drawHUD: function(){
         var ctx = this.ctx;
         ctx.save();
@@ -216,8 +230,48 @@ app.game = {
         ctx.restore();
     },
     
-    //Clears the canvas
+    //clears the canvas
     clearCanvas: function(){
         this.ctx.clearRect(0,0,this.ctx.canvas.width,this.ctx.canvas.height);
+    },
+    
+    //--------------------MOUSE AND KEYBOARD EVENTS--------------------//
+    //handles mousedown events in the program.
+    doMousedown: function(e){
+        //get mouse object
+        var mouse = getMouse(e);
+        var itemsLength = this.appointments.length;
+        for(var i = 0; i < itemsLength;i++){
+            var item = this.appointments[i];
+            var rect = {
+                x: item.location.x,
+                y: item.location.y,
+                width: this.calendar.CALENDAR_CONST.WIDTH,
+                height: (this.calendar.CALENDAR_CONST.HEIGHT * item.length)
+            };
+            if(rectangleContainsPoint(rect,mouse)){
+                this.selectedItem = i;
+                this.appointments[i].beingDragged = true;
+                return;
+            }
+        }
+    },
+    
+    //handles mousedrag events for the calendar items
+    doMousedrag: function(e){
+        if(this.selectedItem < 0){
+            return;
+        }
+        var mouse = getMouse(e);
+        this.appointments[this.selectedItem].location = mouse;
+    },
+    
+    //handles mouseup events in the program
+    doMouseup: function(e){
+        if(this.selectedItem < 0){
+            return;
+        }
+        this.appointments[this.selectedItem].beingDragged = false;
+        this.selectedItem = -1;
     }
 };
