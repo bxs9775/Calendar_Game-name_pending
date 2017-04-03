@@ -30,11 +30,20 @@ td{
     z-index: 0;
 }
 
-#helpButton{
+button{
     position: absolute;
+    z-index: 1;
+}
+
+#helpButton{
     left: 1060px;
     top: 90px;
-    z-index: 1;
+}
+
+#newGame{
+    display: none;
+    left: 568px;
+    top: 425px;
 }
 
 #dragCanvas p{

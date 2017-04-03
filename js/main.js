@@ -12,8 +12,8 @@ app.game = {
         PADDING: 5
     }),
     GAME_CONST: Object.freeze({
-        INIT_TIME: 8,
-        NUM_APPOINTMENTS: 5
+        INIT_TIME: 5,
+        NUM_APPOINTMENTS: 4
     }),
     
     //Drawing canvas
@@ -22,6 +22,7 @@ app.game = {
     
     //HTML elements
     helpButton: undefined,
+    newGameButton: undefined,
     weekHeader: undefined,
     //the rectangle for the calendar
     //this uses hardcoded values as attempts to calculate the values dynamically proved ineffective
@@ -118,6 +119,12 @@ app.game = {
                 }
             }
         }
+        this.newGameButton = document.querySelector("#newGame");
+        this.newGameButton.onclick = (function(){
+            this.newGame();
+            this.changeGameState(this.GAME_STATES.PLAYING);
+        }).bind(app.game);
+        
         this.weekHeader = document.querySelector("#calendar h2");
         
         
@@ -197,9 +204,15 @@ app.game = {
         cancelAnimationFrame(app.game.animationID);
         
         if(newState == this.GAME_STATES.PAUSED){
-            helpButton.style.display = "none";
+            this.helpButton.style.display = "none";
         } else{
-            helpButton.style.display = "block";
+            this.helpButton.style.display = "block";
+        }
+        
+        if(newState == this.GAME_STATES.GAME_OVER){
+            this.newGameButton.style.display = "block";
+        } else{
+            this.newGameButton.style.display = "none";
         }
         
         //switches states
@@ -248,8 +261,11 @@ app.game = {
                             }
                         }
                     }
-                    
-                    this.newLevel();
+                    if(this.work <= 0 || this.life <= 0){
+                        this.changeGameState(this.GAME_STATES.GAME_OVER);
+                    } else{
+                        this.newLevel();
+                    }
                 }
                 break;
         }
@@ -289,7 +305,7 @@ app.game = {
     drawHUD: function(){
         var ctx = this.ctx;
         ctx.save();
-        if(this.gameState == this.GAME_STATES.INSTRUCTIONS || this.gameState == this.GAME_STATES.PAUSED){
+        if(this.gameState != this.GAME_STATES.PLAYING){
             ctx.fillStyle = "black";
             ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
             ctx.fillStyle = "white";
@@ -313,6 +329,22 @@ app.game = {
                 break;
             case this.GAME_STATES.INSTRUCTIONS:
                 ctx.fillText("Instructions:",this.GUI.PADDING,this.GUI.PADDING+this.GUI.BASE_FONT_SIZE);
+                ctx.fillText("* Use the mouse to drag calendar items onto the calendar.",this.GUI.PADDING,(this.GUI.PADDING+this.GUI.BASE_FONT_SIZE)*2);
+                ctx.fillText("* Once you place an item it cannot be moved.",this.GUI.PADDING,(this.GUI.PADDING+this.GUI.BASE_FONT_SIZE)*3);
+                ctx.fillText("* Items cannot share the same slot.",this.GUI.PADDING,(this.GUI.PADDING+this.GUI.BASE_FONT_SIZE)*4);
+                ctx.fillText("* Some items decrease the Life or Work stats if not placed in the calendar.",this.GUI.PADDING,(this.GUI.PADDING+this.GUI.BASE_FONT_SIZE)*5);
+                ctx.fillText("* If Work or Life goes to or below 0 the game ends.",this.GUI.PADDING,(this.GUI.PADDING+this.GUI.BASE_FONT_SIZE)*6);
+                break;
+            case this.GAME_STATES.GAME_OVER:
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                
+                ctx.fillStyle = "red";
+                ctx.fillText("GAME OVER",this.ctx.canvas.width/2,this.ctx.canvas.height/2-(this.GUI.PADDING+this.GUI.BASE_FONT_SIZE));
+                
+                ctx.fillStyle = "white";
+                ctx.fillText("Final Score: " + this.score,this.ctx.canvas.width/2,this.ctx.canvas.height/2);
+                break;
         }
         
         ctx.restore();
