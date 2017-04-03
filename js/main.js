@@ -12,8 +12,8 @@ app.game = {
         PADDING: 5
     }),
     GAME_CONST: Object.freeze({
-        INIT_TIME: 10,
-        NUM_APPOINTMENTS: 4
+        INIT_TIME: 8,
+        NUM_APPOINTMENTS: 6
     }),
     
     //Drawing canvas
@@ -33,6 +33,7 @@ app.game = {
     },
     
     //game parameters
+    score: 0,
     life: 0,
     work: 0,
     timeLeft: 0,
@@ -122,9 +123,11 @@ app.game = {
         var numAppointments = this.GAME_CONST.NUM_APPOINTMENTS;
         var nextHeight = 50;
         for(var i = 0; i < numAppointments;i++){
-            var newLength = Math.round(getRandom(1,2));
-            var newAppointment = new this.calendar.CalendarItem("Meeting",1010,nextHeight,newLength,"Blue",undefined,undefined);
-            Object.seal(newAppointment);
+            var newLength = Math.round(getRandom(1,3));
+            
+            var newAppointment = this.createNewCalendarItem(1010,nextHeight);
+            //new this.calendar.CalendarItem("Meeting",1010,nextHeight,newLength,"Blue",undefined,undefined);
+            //Object.seal(newAppointment);
             this.appointments.push(newAppointment);
             nextHeight += 100;
         }
@@ -132,14 +135,25 @@ app.game = {
         this.resetCalendar();
         
         this.weekHeader.innerHTML = "Week " + this.level + ":";
-        this.timeLeft = 15;
+        this.timeLeft = this.GAME_CONST.INIT_TIME;
     },
     
     //resets values to defaults and prepares for a new game
     newGame: function(){
-        this.life = 5;
-        this.work = 5;
+        this.level = 0;
+        
+        this.score = 0;
+        this.life = 3;
+        this.work = 3;
+        
         this.timeBonus = 0;
+    },
+    
+    createNewCalendarItem: function(x,y){
+        var newLength = Math.round(getRandom(1,3));
+        var newAppointment = new this.calendar.CalendarItem("Meeting",x,y,newLength,"Blue",undefined,undefined);
+        Object.seal(newAppointment);
+        return newAppointment;
     },
     
     //changes the game state
@@ -185,6 +199,21 @@ app.game = {
             case this.GAME_STATES.PLAYING:
                 this.timeLeft -= this.deltaTime;
                 if(this.timeLeft <= 0){
+                    var length = this.appointments.length;
+                    for(var i = 0; i < length;i++){
+                        var item = this.appointments[i];
+                        if(item.scheduled){
+                            this.score++;
+                            if(item.success){
+                                item.success.action();
+                            }
+                        }else{
+                            if(item.failure){
+                                item.failure.action();
+                            }
+                        }
+                    }
+                    
                     this.newLevel();
                 }
                 break;
@@ -233,6 +262,7 @@ app.game = {
             ctx.fillStyle = this.GUI.FONT_COLOR;
         }
         
+        ctx.fillText("Score: " + this.score,this.ctx.canvas.width-120,this.ctx.canvas.height-120);
         ctx.fillText("Time: " + this.timeLeft.toFixed(2),this.ctx.canvas.width-120,this.ctx.canvas.height-90);
         ctx.fillText("Life: " + this.life,this.ctx.canvas.width-120,this.ctx.canvas.height-60);
         ctx.fillText("Work: " + this.work,this.ctx.canvas.width-120,this.ctx.canvas.height-30);
@@ -312,7 +342,7 @@ app.game = {
             if(spotOpen){
                 this.appointments[this.selectedItem].scheduled = true;
                 this.appointments[this.selectedItem].location.x = this.calendarRect.x + calX * (this.calendar.CALENDAR_CONST.WIDTH+4)+4;
-                this.appointments[this.selectedItem].location.y = this.calendarRect.y + calY * (this.calendar.CALENDAR_CONST.HEIGHT+4)+4;
+                this.appointments[this.selectedItem].location.y = this.calendarRect.y + calY * (this.calendar.CALENDAR_CONST.HEIGHT+1)+4;
                 for(var i = 0; i < item.length; i++){
                     this.calendarArr[calY+i][calX] = true;
                 }
