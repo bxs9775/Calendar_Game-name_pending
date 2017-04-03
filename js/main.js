@@ -13,7 +13,7 @@ app.game = {
     }),
     GAME_CONST: Object.freeze({
         INIT_TIME: 8,
-        NUM_APPOINTMENTS: 6
+        NUM_APPOINTMENTS: 5
     }),
     
     //Drawing canvas
@@ -67,6 +67,29 @@ app.game = {
      [false,false,false,false,false]],
     appointments: [],
     selectedItem: -1,
+    
+    //Content
+    CONTENT: Object.freeze({
+        NAMES: Object.freeze({
+            MISC: ["Mow the Lawn", "Haircut", "Walk the Dog", "Cleaning"],
+            WORK: ["Meeting","Project"],
+            LIFE: ["Bike Trip","Concert","Family","Spa"]
+        }),
+        EFFECTS: Object.freeze({
+            WORK_DEC_ONE: {
+                action: function(){
+                    app.game.work--;
+                },
+                string: "-1 Work"
+            },
+            LIFE_DEC_ONE: {
+                action: function(){
+                    app.game.life--;
+                },
+                string: "-1 Life"
+            },
+        }),
+    }),
     
     //--------------------CONTROL METHODS--------------------//
     //Sets up the game for the first time
@@ -126,8 +149,7 @@ app.game = {
             var newLength = Math.round(getRandom(1,3));
             
             var newAppointment = this.createNewCalendarItem(1010,nextHeight);
-            //new this.calendar.CalendarItem("Meeting",1010,nextHeight,newLength,"Blue",undefined,undefined);
-            //Object.seal(newAppointment);
+            
             this.appointments.push(newAppointment);
             nextHeight += 100;
         }
@@ -151,7 +173,20 @@ app.game = {
     
     createNewCalendarItem: function(x,y){
         var newLength = Math.round(getRandom(1,3));
-        var newAppointment = new this.calendar.CalendarItem("Meeting",x,y,newLength,"Blue",undefined,undefined);
+        //appointment, appointment type
+        var newAppointment = undefined;
+        var appointmentType = Math.round(getRandom(0,2));
+        switch(appointmentType){
+            case 0:
+                newAppointment = new this.calendar.CalendarItem(this.CONTENT.NAMES.MISC.randomElement(),x,y,newLength,"Blue",undefined,undefined);
+                break;
+            case 1: 
+                newAppointment = new this.calendar.CalendarItem(this.CONTENT.NAMES.WORK.randomElement(),x,y,newLength,"Blue",undefined,this.CONTENT.EFFECTS.WORK_DEC_ONE);
+                break;
+            case 2: 
+                newAppointment = new this.calendar.CalendarItem(this.CONTENT.NAMES.LIFE.randomElement(),x,y,newLength,"Blue",undefined,this.CONTENT.EFFECTS.LIFE_DEC_ONE);
+                break;
+        }
         Object.seal(newAppointment);
         return newAppointment;
     },
