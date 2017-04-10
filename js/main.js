@@ -78,6 +78,7 @@ app.game = {
      [false,false,false,false,false]],
     appointments: [],
     selectedItem: -1,
+    itemsScheduled: 0,
     
     //Content
     CONTENT: Object.freeze({
@@ -166,13 +167,14 @@ app.game = {
     newLevel: function(){
         this.level++;
         
+        this.itemsScheduled = 0;
         this.selectedItem = -1;
         this.appointments = [];
         var numAppointments = this.GAME_CONST.NUM_APPOINTMENTS;
         var width = 5;
         var height = this.calendarRect.y + this.calendarRect.height + 10;
         for(var i = 0; i < numAppointments;i++){
-            var newLength = Math.round(getRandom(1,3));
+            var newLength = Math.round(getRandom(2,4));
             
             var newAppointment = this.createNewCalendarItem(width,height);
             
@@ -195,8 +197,8 @@ app.game = {
         this.startingTime = this.GAME_CONST.MAX_TIME;
         
         this.score = 0;
-        this.life = 3;
-        this.work = 3;
+        this.life = 4;
+        this.work = 4;
         
         this.timeBonus = 0;
         
@@ -204,7 +206,7 @@ app.game = {
     },
     
     createNewCalendarItem: function(x,y){
-        var newLength = Math.round(getRandom(1,3));
+        var newLength = Math.round(getRandom(1,4));
         //appointment, appointment type
         var newAppointment = undefined;
         var appointmentType = Math.round(getRandom(0,2));
@@ -249,6 +251,29 @@ app.game = {
         this.update();
     },
     
+    //handles the end of the level
+    endRound: function(){
+        var length = this.appointments.length;
+        for(var i = 0; i < length;i++){
+            var item = this.appointments[i];
+            if(item.scheduled){
+                this.score++;
+                if(item.success){
+                    item.success.action();
+                }
+            }else{
+                if(item.failure){
+                    item.failure.action();
+                }
+            }
+        }
+        if(this.work <= 0 || this.life <= 0){
+            this.changeGameState(this.GAME_STATES.GAME_OVER);
+        } else{
+            this.newLevel();
+        }
+    },
+    
     //sets all values in the calendar array to false
     resetCalendar: function(){
         var calendarHeight = this.calendarArr.length;
@@ -272,6 +297,8 @@ app.game = {
             case this.GAME_STATES.PLAYING:
                 this.timeLeft -= this.deltaTime;
                 if(this.timeLeft <= 0){
+                    this.endRound();
+                    /*
                     var length = this.appointments.length;
                     for(var i = 0; i < length;i++){
                         var item = this.appointments[i];
@@ -291,6 +318,7 @@ app.game = {
                     } else{
                         this.newLevel();
                     }
+                    */
                 }
                 break;
         }
@@ -443,6 +471,12 @@ app.game = {
                 this.appointments[this.selectedItem].location.y = this.calendarRect.y + calY * (this.calendar.CALENDAR_CONST.HEIGHT+1)+4;
                 for(var i = 0; i < item.length; i++){
                     this.calendarArr[calY+i][calX] = true;
+                }
+                
+                this.itemsScheduled++;
+                if(this.itemsScheduled >= this.GAME_CONST.NUM_APPOINTMENTS){
+                    this.endRound();
+                    return;
                 }
             }
         }
