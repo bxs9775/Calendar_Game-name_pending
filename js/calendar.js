@@ -6,8 +6,8 @@ app.calendar = {
     
     //Constants
     CALENDAR_CONST: Object.freeze({
-        WIDTH: 160,
-        HEIGHT: 80
+        WIDTH: 100,
+        HEIGHT: 60
     }),
     
     //Days/hours - currently unused
@@ -63,12 +63,12 @@ app.calendar = {
             ctx.font = app.game.GUI.FONT.CALENDAR;
             ctx.fillStyle = app.game.GUI.FONT_COLOR;
             ctx.fillText(name,this.location.x+app.game.GUI.PADDING,this.location.y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*1);
-            ctx.fillText("Length: " + this.length + " hour(s)" ,this.location.x+app.game.GUI.PADDING,this.location.y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*2.1);
+            //ctx.fillText("Length: " + this.length + " hour(s)" ,this.location.x+app.game.GUI.PADDING,this.location.y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*2.1);
             if(this.success){
-                ctx.fillText("Success: " + this.success.string,this.location.x+app.game.GUI.PADDING,this.location.y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*3.2);
+                ctx.fillText("S: " + this.success.string,this.location.x+app.game.GUI.PADDING,this.location.y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*2.1);
             }
             if(this.failure){
-                ctx.fillText("Failure: " + this.failure.string,this.location.x+app.game.GUI.PADDING,this.location.y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*4.3);
+                ctx.fillText("F: " + this.failure.string,this.location.x+app.game.GUI.PADDING,this.location.y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*3.2);
             }
             
             //draw stroke

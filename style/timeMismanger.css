@@ -11,11 +11,11 @@ table{
 }
 
 tr{
-    height: 80px;
+    height: 60px;
 }
 
 th,td{
-    width: 160px;
+    width: 100px;
 }
 
 td{

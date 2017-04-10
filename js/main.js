@@ -12,13 +12,13 @@ app.game = {
             CALENDAR: "14pt Arial"
         }),
         FONT_COLOR: "black",
-        PADDING: 12
+        PADDING: 10
     }),
     
     GAME_CONST: Object.freeze({
-        MAX_TIME: 15,
-        MIN_TIME: 3,
-        NUM_APPOINTMENTS: 4
+        MAX_TIME: 20,
+        MIN_TIME: 10,
+        NUM_APPOINTMENTS: 10
     }),
     
     //Drawing canvas
@@ -32,8 +32,8 @@ app.game = {
     //the rectangle for the calendar
     //this uses hardcoded values as attempts to calculate the values dynamically proved ineffective
     calendarRect: {
-        x: 170,
-        y: 129,
+        x: -1,
+        y: -1,
         width: -1,
         height: -1
     },
@@ -82,9 +82,9 @@ app.game = {
     //Content
     CONTENT: Object.freeze({
         NAMES: Object.freeze({
-            MISC: ["Mow the Lawn", "Haircut", "Walk the Dog", "Cleaning"],
+            MISC: ["Gardening", "Haircut", "Cleaning"],
             WORK: ["Meeting","Project"],
-            LIFE: ["Bike Trip","Concert","Family","Spa"]
+            LIFE: ["Biking","Concert","Family","Spa"]
         }),
         EFFECTS: Object.freeze({
             WORK_DEC_ONE: {
@@ -101,6 +101,8 @@ app.game = {
             },
         }),
     }),
+    
+    debug: false,
     
     //--------------------CONTROL METHODS--------------------//
     //Sets up the game for the first time
@@ -145,8 +147,10 @@ app.game = {
         this.canvas.onmouseup = this.doMouseup.bind(this);
         
         //calendar rect
-        this.calendarRect.width = this.calendar.CALENDAR_CONST.WIDTH*this.calCols;
-        this.calendarRect.height = this.calendar.CALENDAR_CONST.HEIGHT*this.calRows;
+        this.calendarRect.x = 12 + this.calendar.CALENDAR_CONST.WIDTH;
+        this.calendarRect.y = 50 + this.calendar.CALENDAR_CONST.HEIGHT;
+        this.calendarRect.width = this.calendar.CALENDAR_CONST.WIDTH*this.calCols*1.04;
+        this.calendarRect.height = this.calendar.CALENDAR_CONST.HEIGHT*this.calRows*1.04;
         
         //game states
         this.gameState = app.game.GAME_STATES.INSTRUCTIONS;
@@ -165,14 +169,15 @@ app.game = {
         this.selectedItem = -1;
         this.appointments = [];
         var numAppointments = this.GAME_CONST.NUM_APPOINTMENTS;
-        var nextHeight = 50;
+        var width = 5;
+        var height = this.calendarRect.y + this.calendarRect.height + 10;
         for(var i = 0; i < numAppointments;i++){
             var newLength = Math.round(getRandom(1,3));
             
-            var newAppointment = this.createNewCalendarItem(1010,nextHeight);
+            var newAppointment = this.createNewCalendarItem(width,height);
             
             this.appointments.push(newAppointment);
-            nextHeight += 100;
+            width += this.calendar.CALENDAR_CONST.WIDTH*1.0;
         }
         
         this.resetCalendar();
@@ -180,7 +185,7 @@ app.game = {
         this.weekHeader.innerHTML = "Week " + this.level + ":";
         this.timeLeft = this.startingTime;
         if(this.startingTime > this.GAME_CONST.MIN_TIME){
-            this.startingTime -= 2;
+            this.startingTime -= 2.5;
         }
     },
     
@@ -311,6 +316,12 @@ app.game = {
         switch(this.gameState){
             case this.GAME_STATES.PLAYING:
                 this.clearCanvas();
+                
+                if(this.debug){
+                    this.ctx.strokeStyle = "red";
+                    this.ctx.strokeRect(this.calendarRect.x,this.calendarRect.y,this.calendarRect.width,this.calendarRect.height);
+                }
+                
                 var listSize = this.appointments.length;
                 for(var i = 0; i < listSize; i++){
                     this.appointments[i].draw(this.ctx);
