@@ -34,9 +34,12 @@ app.game = {
     calendarRect: {
         x: 170,
         y: 129,
-        width: 800,
-        height: 480
+        width: -1,
+        height: -1
     },
+    calCols: 5,
+    calRows: 6,
+    
     
     //game parameters
     score: 0,
@@ -140,6 +143,10 @@ app.game = {
         this.canvas.onmousedown = this.doMousedown.bind(this);
         this.canvas.onmousemove = this.doMousedrag.bind(this);
         this.canvas.onmouseup = this.doMouseup.bind(this);
+        
+        //calendar rect
+        this.calendarRect.width = this.calendar.CALENDAR_CONST.WIDTH*this.calCols;
+        this.calendarRect.height = this.calendar.CALENDAR_CONST.HEIGHT*this.calRows;
         
         //game states
         this.gameState = app.game.GAME_STATES.INSTRUCTIONS;
