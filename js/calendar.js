@@ -60,7 +60,7 @@ app.calendar = {
             
             //draw text
             ctx.globalAlpha = 1.0;
-            ctx.font = app.game.GUI.FONT;
+            ctx.font = app.game.GUI.FONT.CALENDAR;
             ctx.fillStyle = app.game.GUI.FONT_COLOR;
             ctx.fillText(name,this.location.x+app.game.GUI.PADDING,this.location.y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*1);
             ctx.fillText("Length: " + this.length + " hour(s)" ,this.location.x+app.game.GUI.PADDING,this.location.y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*2.1);

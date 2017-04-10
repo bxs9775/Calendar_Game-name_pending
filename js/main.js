@@ -7,12 +7,17 @@ app.game = {
     //constants
     GUI: Object.freeze({
         BASE_FONT_SIZE: 14,
-        FONT: "14pt Arial",
+        FONT: Object.freeze({
+            GUI_FONT: "16pt Arial",
+            CALENDAR: "14pt Arial"
+        }),
         FONT_COLOR: "black",
-        PADDING: 5
+        PADDING: 12
     }),
+    
     GAME_CONST: Object.freeze({
-        INIT_TIME: 5,
+        MAX_TIME: 15,
+        MIN_TIME: 3,
         NUM_APPOINTMENTS: 4
     }),
     
@@ -42,6 +47,8 @@ app.game = {
     lastTime: 0,
     currTime: 0,
     deltaTime: 0,
+
+    startingTime: 0,
     
     //game states
     animationID: 0,
@@ -100,7 +107,7 @@ app.game = {
         this.ctx = this.canvas.getContext("2d");
         
         //font/drawing
-        this.ctx.font = this.GUI.FONT;
+        this.ctx.font = this.GUI.FONT.GUI_FONT;
         
         //buttons and GUI
         this.helpButton = document.querySelector("#helpButton");
@@ -122,6 +129,7 @@ app.game = {
         this.newGameButton = document.querySelector("#newGame");
         this.newGameButton.onclick = (function(){
             this.newGame();
+            
             this.changeGameState(this.GAME_STATES.PLAYING);
         }).bind(app.game);
         
@@ -136,8 +144,7 @@ app.game = {
         //game states
         this.gameState = app.game.GAME_STATES.INSTRUCTIONS;
         
-        //starting new game and level
-        this.newLevel();
+        //starting new game
         this.newGame();
         
         //starts game loop
@@ -164,18 +171,24 @@ app.game = {
         this.resetCalendar();
         
         this.weekHeader.innerHTML = "Week " + this.level + ":";
-        this.timeLeft = this.GAME_CONST.INIT_TIME;
+        this.timeLeft = this.startingTime;
+        if(this.startingTime > this.GAME_CONST.MIN_TIME){
+            this.startingTime -= 2;
+        }
     },
     
     //resets values to defaults and prepares for a new game
     newGame: function(){
         this.level = 0;
+        this.startingTime = this.GAME_CONST.MAX_TIME;
         
         this.score = 0;
         this.life = 3;
         this.work = 3;
         
         this.timeBonus = 0;
+        
+        this.newLevel();
     },
     
     createNewCalendarItem: function(x,y){
