@@ -69,7 +69,7 @@ app.game = {
     //calendar container (not sure whether to handle this here or in calendar.js)
     //true - this spot in the calendar is occupied
     //false - this spot in the calendar is vacent
-    calendarObj: function(){
+    CalendarObj: function(){
         this.array =
         [[false,false,false,false,false],
          [false,false,false,false,false],
@@ -119,7 +119,7 @@ app.game = {
         this.ctx.font = this.GUI.FONT.GUI_FONT;
         
         //calendar object
-        this.calendarInst = new this.calendarObj();
+        this.calendarInst = new this.CalendarObj();
         
         //buttons and GUI
         this.helpButton = document.querySelector("#helpButton");
@@ -377,7 +377,9 @@ app.game = {
                 ctx.fillText("* Once you place an item it cannot be moved.",this.GUI.PADDING,(this.GUI.PADDING+this.GUI.BASE_FONT_SIZE)*3);
                 ctx.fillText("* Items cannot share the same slot.",this.GUI.PADDING,(this.GUI.PADDING+this.GUI.BASE_FONT_SIZE)*4);
                 ctx.fillText("* Some items decrease the Life or Work stats if not placed in the calendar.",this.GUI.PADDING,(this.GUI.PADDING+this.GUI.BASE_FONT_SIZE)*5);
-                ctx.fillText("* If Work or Life goes to or below 0 the game ends.",this.GUI.PADDING,(this.GUI.PADDING+this.GUI.BASE_FONT_SIZE)*6);
+                ctx.fillText("* The round ends when all items are scheduled or time runs out. The game automatically starts the next round.",this.GUI.PADDING,(this.GUI.PADDING+this.GUI.BASE_FONT_SIZE)*6);
+                ctx.fillText("* The effects after the F (for Fail) activate after the round if the item is not scheduled.",this.GUI.PADDING,(this.GUI.PADDING+this.GUI.BASE_FONT_SIZE)*7);
+                ctx.fillText("* If Work or Life goes to or below 0 the game ends.",this.GUI.PADDING,(this.GUI.PADDING+this.GUI.BASE_FONT_SIZE)*8);
                 break;
             case this.GAME_STATES.GAME_OVER:
                 ctx.textAlign = "center";
