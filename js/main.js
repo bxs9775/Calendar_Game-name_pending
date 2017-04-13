@@ -69,16 +69,19 @@ app.game = {
     //calendar container (not sure whether to handle this here or in calendar.js)
     //true - this spot in the calendar is occupied
     //false - this spot in the calendar is vacent
-    calendarArr: 
-    [[false,false,false,false,false],
-     [false,false,false,false,false],
-     [false,false,false,false,false],
-     [false,false,false,false,false],
-     [false,false,false,false,false],
-     [false,false,false,false,false]],
-    appointments: [],
-    selectedItem: -1,
-    itemsScheduled: 0,
+    calendarObj: function(){
+        this.array =
+        [[false,false,false,false,false],
+         [false,false,false,false,false],
+         [false,false,false,false,false],
+         [false,false,false,false,false],
+         [false,false,false,false,false],
+         [false,false,false,false,false]];
+        this.appointments = [];
+        this.selectedItem = -1;
+        this.itemsScheduled = 0;
+    },
+    calendarInst: undefined,
     
     //Content
     CONTENT: Object.freeze({
@@ -114,6 +117,9 @@ app.game = {
         
         //font/drawing
         this.ctx.font = this.GUI.FONT.GUI_FONT;
+        
+        //calendar object
+        this.calendarInst = new this.calendarObj();
         
         //buttons and GUI
         this.helpButton = document.querySelector("#helpButton");
@@ -167,9 +173,9 @@ app.game = {
     newLevel: function(){
         this.level++;
         
-        this.itemsScheduled = 0;
-        this.selectedItem = -1;
-        this.appointments = [];
+        this.calendarInst.itemsScheduled = 0;
+        this.calendarInst.selectedItem = -1;
+        this.calendarInst.appointments = [];
         var numAppointments = this.GAME_CONST.NUM_APPOINTMENTS;
         var width = 5;
         var height = this.calendarRect.y + this.calendarRect.height + 10;
@@ -178,7 +184,7 @@ app.game = {
             
             var newAppointment = this.createNewCalendarItem(width,height);
             
-            this.appointments.push(newAppointment);
+            this.calendarInst.appointments.push(newAppointment);
             width += this.calendar.CALENDAR_CONST.WIDTH*1.0;
         }
         
@@ -253,9 +259,9 @@ app.game = {
     
     //handles the end of the level
     endRound: function(){
-        var length = this.appointments.length;
+        var length = this.calendarInst.appointments.length;
         for(var i = 0; i < length;i++){
-            var item = this.appointments[i];
+            var item = this.calendarInst.appointments[i];
             if(item.scheduled){
                 this.score++;
                 if(item.success){
@@ -276,11 +282,11 @@ app.game = {
     
     //sets all values in the calendar array to false
     resetCalendar: function(){
-        var calendarHeight = this.calendarArr.length;
-        var calendarWidth = this.calendarArr[0].length;
+        var calendarHeight = this.calendarInst.array.length;
+        var calendarWidth = this.calendarInst.array[0].length;
         for(var i = 0; i < calendarHeight; i++){
             for(var j = 0; j < calendarWidth; j++){
-                this.calendarArr[i][j] = false;
+                this.calendarInst.array[i][j] = false;
             }
         }
     },
@@ -298,27 +304,6 @@ app.game = {
                 this.timeLeft -= this.deltaTime;
                 if(this.timeLeft <= 0){
                     this.endRound();
-                    /*
-                    var length = this.appointments.length;
-                    for(var i = 0; i < length;i++){
-                        var item = this.appointments[i];
-                        if(item.scheduled){
-                            this.score++;
-                            if(item.success){
-                                item.success.action();
-                            }
-                        }else{
-                            if(item.failure){
-                                item.failure.action();
-                            }
-                        }
-                    }
-                    if(this.work <= 0 || this.life <= 0){
-                        this.changeGameState(this.GAME_STATES.GAME_OVER);
-                    } else{
-                        this.newLevel();
-                    }
-                    */
                 }
                 break;
         }
@@ -350,9 +335,9 @@ app.game = {
                     this.ctx.strokeRect(this.calendarRect.x,this.calendarRect.y,this.calendarRect.width,this.calendarRect.height);
                 }
                 
-                var listSize = this.appointments.length;
+                var listSize = this.calendarInst.appointments.length;
                 for(var i = 0; i < listSize; i++){
-                    this.appointments[i].draw(this.ctx);
+                    this.calendarInst.appointments[i].draw(this.ctx);
                 }
                 break;
         }
@@ -419,14 +404,14 @@ app.game = {
     doMousedown: function(e){
         //get mouse object
         var mouse = getMouse(e);
-        var itemsLength = this.appointments.length;
+        var itemsLength = this.calendarInst.appointments.length;
         for(var i = 0; i < itemsLength;i++){
-            var item = this.appointments[i];
+            var item = this.calendarInst.appointments[i];
             var rect = item.getRectangle();
             if(!item.scheduled && rectangleContainsPoint(rect,mouse)){
-                this.selectedItem = i;
-                this.appointments[i].beingDragged = true;
-                this.appointments[i].color = "Yellow";
+                this.calendarInst.selectedItem = i;
+                this.calendarInst.appointments[i].beingDragged = true;
+                this.calendarInst.appointments[i].color = "Yellow";
                 return;
             }
         }
@@ -434,47 +419,47 @@ app.game = {
     
     //handles mousedrag events for the calendar items
     doMousedrag: function(e){
-        if(this.selectedItem < 0){
+        if(this.calendarInst.selectedItem < 0){
             return;
         }
         var mouse = getMouse(e);
-        this.appointments[this.selectedItem].location = mouse;
+        this.calendarInst.appointments[this.calendarInst.selectedItem].location = mouse;
     },
     
     //handles mouseup events in the program
     doMouseup: function(e){
-        if(this.selectedItem < 0){
+        if(this.calendarInst.selectedItem < 0){
             return;
         }
         
-        var item = this.appointments[this.selectedItem];
-        this.appointments[this.selectedItem].beingDragged = false;
+        var item = this.calendarInst.appointments[this.calendarInst.selectedItem];
+        this.calendarInst.appointments[this.calendarInst.selectedItem].beingDragged = false;
         
         var itemRect = item.getRectangle();
         if(rectanglesIntersect(itemRect,this.calendarRect)){
             var calX = (itemRect.x < this.calendarRect.x)?0:(Math.floor((itemRect.x-this.calendarRect.x)/this.calendar.CALENDAR_CONST.WIDTH));
             var calY = (itemRect.y < this.calendarRect.y)?0:(Math.floor((itemRect.y-this.calendarRect.y)/this.calendar.CALENDAR_CONST.HEIGHT));
             var spotOpen = true;
-            if((calY+(item.length)) > this.calendarArr.length){
+            if((calY+(item.length)) > this.calendarInst.array.length){
                 spotOpen = false;
             }else{
                 for(var i = 0; i < item.length; i++){
-                    if(this.calendarArr[calY+i][calX]){
+                    if(this.calendarInst.array[calY+i][calX]){
                         spotOpen = false;
                     }
                 }
             }
             
             if(spotOpen){
-                this.appointments[this.selectedItem].scheduled = true;
-                this.appointments[this.selectedItem].location.x = this.calendarRect.x + calX * (this.calendar.CALENDAR_CONST.WIDTH+4)+4;
-                this.appointments[this.selectedItem].location.y = this.calendarRect.y + calY * (this.calendar.CALENDAR_CONST.HEIGHT+1)+4;
+                this.calendarInst.appointments[this.calendarInst.selectedItem].scheduled = true;
+                this.calendarInst.appointments[this.calendarInst.selectedItem].location.x = this.calendarRect.x + calX * (this.calendar.CALENDAR_CONST.WIDTH+4)+4;
+                this.calendarInst.appointments[this.calendarInst.selectedItem].location.y = this.calendarRect.y + calY * (this.calendar.CALENDAR_CONST.HEIGHT+1)+4;
                 for(var i = 0; i < item.length; i++){
-                    this.calendarArr[calY+i][calX] = true;
+                    this.calendarInst.array[calY+i][calX] = true;
                 }
                 
-                this.itemsScheduled++;
-                if(this.itemsScheduled >= this.GAME_CONST.NUM_APPOINTMENTS){
+                this.calendarInst.itemsScheduled++;
+                if(this.calendarInst.itemsScheduled >= this.GAME_CONST.NUM_APPOINTMENTS){
                     this.endRound();
                     return;
                 }
@@ -482,12 +467,12 @@ app.game = {
         }
         
         if(item.scheduled){
-            this.appointments[this.selectedItem].color = "Green";
+            this.calendarInst.appointments[this.calendarInst.selectedItem].color = "Green";
         }else{
             
-            this.appointments[this.selectedItem].color = "Blue";
+            this.calendarInst.appointments[this.calendarInst.selectedItem].color = "Blue";
         }
         
-        this.selectedItem = -1;
+        this.calendarInst.selectedItem = -1;
     },
 };
