@@ -30,7 +30,6 @@ app.game = {
     newGameButton: undefined,
     weekHeader: undefined,
     //the rectangle for the calendar
-    //this uses hardcoded values as attempts to calculate the values dynamically proved ineffective
     calendarRect: {
         x: -1,
         y: -1,
@@ -66,22 +65,8 @@ app.game = {
     level: 0,
     
     //calendar
-    //calendar container (not sure whether to handle this here or in calendar.js)
-    //true - this spot in the calendar is occupied
-    //false - this spot in the calendar is vacent
-    CalendarObj: function(){
-        this.array =
-        [[false,false,false,false,false],
-         [false,false,false,false,false],
-         [false,false,false,false,false],
-         [false,false,false,false,false],
-         [false,false,false,false,false],
-         [false,false,false,false,false]];
-        this.appointments = [];
-        this.selectedItem = -1;
-        this.itemsScheduled = 0;
-    },
     calendarInst: undefined,
+    
     
     //Content
     CONTENT: Object.freeze({
@@ -119,7 +104,7 @@ app.game = {
         this.ctx.font = this.GUI.FONT.GUI_FONT;
         
         //calendar object
-        this.calendarInst = new this.CalendarObj();
+        this.calendarInst = new this.calendar.CalendarObj();
         
         //buttons and GUI
         this.helpButton = document.querySelector("#helpButton");
@@ -430,38 +415,39 @@ app.game = {
     
     //handles mouseup events in the program
     doMouseup: function(e){
-        if(this.calendarInst.selectedItem < 0){
+        var cal = this.calendarInst;
+        if(cal.selectedItem < 0){
             return;
         }
         
-        var item = this.calendarInst.appointments[this.calendarInst.selectedItem];
-        this.calendarInst.appointments[this.calendarInst.selectedItem].beingDragged = false;
+        var item = cal.appointments[cal.selectedItem];
+        cal.appointments[cal.selectedItem].beingDragged = false;
         
         var itemRect = item.getRectangle();
         if(rectanglesIntersect(itemRect,this.calendarRect)){
             var calX = (itemRect.x < this.calendarRect.x)?0:(Math.floor((itemRect.x-this.calendarRect.x)/this.calendar.CALENDAR_CONST.WIDTH));
             var calY = (itemRect.y < this.calendarRect.y)?0:(Math.floor((itemRect.y-this.calendarRect.y)/this.calendar.CALENDAR_CONST.HEIGHT));
             var spotOpen = true;
-            if((calY+(item.length)) > this.calendarInst.array.length){
+            if((calY+(item.length)) > cal.array.length){
                 spotOpen = false;
             }else{
                 for(var i = 0; i < item.length; i++){
-                    if(this.calendarInst.array[calY+i][calX]){
+                    if(cal.array[calY+i][calX]){
                         spotOpen = false;
                     }
                 }
             }
             
             if(spotOpen){
-                this.calendarInst.appointments[this.calendarInst.selectedItem].scheduled = true;
-                this.calendarInst.appointments[this.calendarInst.selectedItem].location.x = this.calendarRect.x + calX * (this.calendar.CALENDAR_CONST.WIDTH+4)+4;
-                this.calendarInst.appointments[this.calendarInst.selectedItem].location.y = this.calendarRect.y + calY * (this.calendar.CALENDAR_CONST.HEIGHT+1)+4;
+                cal.appointments[cal.selectedItem].scheduled = true;
+                cal.appointments[cal.selectedItem].location.x = this.calendarRect.x + calX * (this.calendar.CALENDAR_CONST.WIDTH+4)+4;
+                cal.appointments[cal.selectedItem].location.y = this.calendarRect.y + calY * (this.calendar.CALENDAR_CONST.HEIGHT+1)+4;
                 for(var i = 0; i < item.length; i++){
-                    this.calendarInst.array[calY+i][calX] = true;
+                    cal.array[calY+i][calX] = true;
                 }
                 
-                this.calendarInst.itemsScheduled++;
-                if(this.calendarInst.itemsScheduled >= this.GAME_CONST.NUM_APPOINTMENTS){
+                cal.itemsScheduled++;
+                if(cal.itemsScheduled >= this.GAME_CONST.NUM_APPOINTMENTS){
                     this.endRound();
                     return;
                 }
@@ -469,12 +455,12 @@ app.game = {
         }
         
         if(item.scheduled){
-            this.calendarInst.appointments[this.calendarInst.selectedItem].color = "Green";
+            cal.appointments[cal.selectedItem].color = "Green";
         }else{
             
-            this.calendarInst.appointments[this.calendarInst.selectedItem].color = "Blue";
+            cal.appointments[cal.selectedItem].color = "Blue";
         }
         
-        this.calendarInst.selectedItem = -1;
+        cal.selectedItem = -1;
     },
 };

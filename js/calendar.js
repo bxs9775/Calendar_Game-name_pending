@@ -19,6 +19,23 @@ app.calendar = {
         FRI: 4
     }),
     
+    //calendar
+    //calendar container (not sure whether to handle this here or in calendar.js)
+    //true - this spot in the calendar is occupied
+    //false - this spot in the calendar is vacent
+    CalendarObj: function(){
+        this.array =
+        [[false,false,false,false,false],
+         [false,false,false,false,false],
+         [false,false,false,false,false],
+         [false,false,false,false,false],
+         [false,false,false,false,false],
+         [false,false,false,false,false]];
+        this.appointments = [];
+        this.selectedItem = -1;
+        this.itemsScheduled = 0;
+    },
+    
     ///Stores data on a calendar item in the game
     ///Parameters:
     ///   name - the name displayed for the item
