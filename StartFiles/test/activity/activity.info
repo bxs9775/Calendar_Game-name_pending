@@ -1,0 +1,6 @@
+[Activity]
+name = test
+bundle_id = edu.rit.hfoss
+exec = sugar-activity hfossActivity.hfossActivity
+icon = activity-generic
+activity_version = 1
