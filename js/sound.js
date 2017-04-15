@@ -5,17 +5,17 @@ var app = app || {};
 
 app.sound = function(){
     var bgAudio = undefined;
-    var effectAudio: undefined;
+    var effectAudio = undefined;
     var EFFECTS = Object.freeze({
-        SELECT: "",
-        DROP: "",
-        DROP_SUCCESS: "",
-        NEW_ROUND: ""
+        SELECT: "btn402.mp3",
+        DROP: "hint.wav",
+        DROP_SUCCESS: "buttonchime02up.wav",
+        END_ROUND: "bronzebell1.wav"
     });
     
     //Initializes the audio control elements
     //From the Boomshine project
-    function init(){
+    function setup(){
 		bgAudio = document.querySelector("#bgAudio");
 		bgAudio.volume=0.25;
 		effectAudio = document.querySelector("#effectAudio");
@@ -40,13 +40,13 @@ app.sound = function(){
     //Params:
     //  effect: the name of the sound file that will be played
 	function playEffect(effect){
-		effectAudio.src = "media/" + effect;
+		effectAudio.src = "media/audio/" + effect;
 		effectAudio.play();
 	}
     
     //Allows certain methods and values to be accessed by other files
     return {
-        init: init,
+        setup: setup,
         playBGAudio: playBGAudio,
         stopBGAudio: stopBGAudio,
         playEffect: playEffect,

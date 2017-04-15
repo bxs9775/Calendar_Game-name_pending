@@ -9,6 +9,10 @@ var app = app || {};
         Object.seal(app.calendar);
         app.game.calendar = app.calendar;
         
+        Object.seal(app.sound);
+        app.sound.setup();
+        app.game.sound = app.sound;
+        
         Object.seal(app.game);
         app.game.setup();
     }

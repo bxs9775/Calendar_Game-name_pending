@@ -67,6 +67,9 @@ app.game = {
     //calendar
     calendarInst: undefined,
     
+    //External scripts
+    calendar: undefined,
+    sound: undefined,
     
     //Content
     CONTENT: Object.freeze({
@@ -220,6 +223,9 @@ app.game = {
     changeGameState: function(newState){
         //cancels animations
         cancelAnimationFrame(app.game.animationID);
+        if(!(newState == this.GAME_STATES.PLAYING || newState == this.GAME_STATES.GAME_OVER)){
+           this.sound.stopBGAudio();
+        }
         
         if(newState == this.GAME_STATES.PAUSED){
             this.helpButton.style.display = "none";
@@ -233,17 +239,22 @@ app.game = {
             this.newGameButton.style.display = "none";
         }
         
+        if(!(this.state == this.GAME_STATES.PLAYING || this.state == this.GAME_STATES.GAME_OVER) && (newState == this.GAME_STATES.PLAYING || newState == this.GAME_STATES.GAME_OVER)){
+            app.sound.playBGAudio();
+        }
+        
         //switches states
         this.lastState = this.gameState;
         this.gameState = newState;
-        
         
         //resumes animating
         this.update();
     },
     
     //handles the end of the level
-    endRound: function(){
+    endRound: function(){ 
+        this.sound.playEffect(this.sound.EFFECTS.END_ROUND);
+        
         var length = this.calendarInst.appointments.length;
         for(var i = 0; i < length;i++){
             var item = this.calendarInst.appointments[i];
@@ -396,9 +407,13 @@ app.game = {
             var item = this.calendarInst.appointments[i];
             var rect = item.getRectangle();
             if(!item.scheduled && rectangleContainsPoint(rect,mouse)){
+                //select item
                 this.calendarInst.selectedItem = i;
                 this.calendarInst.appointments[i].beingDragged = true;
                 this.calendarInst.appointments[i].color = "Yellow";
+                
+                //play selection effect
+                this.sound.playEffect(this.sound.EFFECTS.SELECT);
                 return;
             }
         }
@@ -456,9 +471,10 @@ app.game = {
         
         if(item.scheduled){
             cal.appointments[cal.selectedItem].color = "Green";
+            this.sound.playEffect(this.sound.EFFECTS.DROP_SUCCESS);
         }else{
-            
             cal.appointments[cal.selectedItem].color = "Blue";
+            this.sound.playEffect(this.sound.EFFECTS.DROP);
         }
         
         cal.selectedItem = -1;
