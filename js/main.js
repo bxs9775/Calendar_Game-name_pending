@@ -200,19 +200,19 @@ app.game = {
     },
     
     createNewCalendarItem: function(x,y){
-        var newLength = Math.round(getRandom(1,4));
+        var newLength = Math.round(getRandom(2,4));
         //appointment, appointment type
         var newAppointment = undefined;
         var appointmentType = Math.round(getRandom(0,2));
         switch(appointmentType){
             case 0:
-                newAppointment = new this.calendar.CalendarItem(this.CONTENT.NAMES.MISC.randomElement(),x,y,newLength,"Blue",undefined,undefined);
+                newAppointment = new this.calendar.CalendarItem(this.CONTENT.NAMES.MISC.randomElement(),x,y,newLength,this.calendar.ICONS.MISC,undefined,undefined);
                 break;
             case 1: 
-                newAppointment = new this.calendar.CalendarItem(this.CONTENT.NAMES.WORK.randomElement(),x,y,newLength,"Blue",undefined,this.CONTENT.EFFECTS.WORK_DEC_ONE);
+                newAppointment = new this.calendar.CalendarItem(this.CONTENT.NAMES.WORK.randomElement(),x,y,newLength,this.calendar.ICONS.WORK,undefined,this.CONTENT.EFFECTS.WORK_DEC_ONE);
                 break;
             case 2: 
-                newAppointment = new this.calendar.CalendarItem(this.CONTENT.NAMES.LIFE.randomElement(),x,y,newLength,"Blue",undefined,this.CONTENT.EFFECTS.LIFE_DEC_ONE);
+                newAppointment = new this.calendar.CalendarItem(this.CONTENT.NAMES.LIFE.randomElement(),x,y,newLength,this.calendar.ICONS.LIFE,undefined,this.CONTENT.EFFECTS.LIFE_DEC_ONE);
                 break;
         }
         Object.seal(newAppointment);

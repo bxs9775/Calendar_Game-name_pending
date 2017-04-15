@@ -11,13 +11,18 @@ app.calendar = {
     }),
     
     //Days/hours - currently unused
-    DAYS: Object.freeze({
+    /*DAYS: Object.freeze({
         MON: 0,
         TUES: 1,
         WED: 2,
         THURS: 3,
         FRI: 4
-    }),
+    }),*/
+    ICONS: {
+        WORK: undefined,
+        LIFE: undefined,
+        MISC: undefined
+    },
     
     //calendar
     //calendar container (not sure whether to handle this here or in calendar.js)
@@ -36,6 +41,7 @@ app.calendar = {
         this.itemsScheduled = 0;
     },
     
+    
     ///Stores data on a calendar item in the game
     ///Parameters:
     ///   name - the name displayed for the item
@@ -50,14 +56,15 @@ app.calendar = {
     ///      }
     ///   failure - an object that details information on the effect when the event is not placed in the schedule at the end of the round. (See the layout of the success parameter.)
     
-    CalendarItem: function(name,x,y,length,color,success,failure){
+    CalendarItem: function(name,x,y,length,icon,success,failure){
         this.name= name;
         this.location = {
             x: x,
             y: y
         };
         this.length = length;
-        this.color = color;
+        this.color = "Blue";
+        this.icon = icon;
         this.success = success;
         this.failure = failure;
         this.beingDragged = false;
@@ -73,19 +80,20 @@ app.calendar = {
             ctx.globalAlpha = 0.6;
             ctx.fillStyle = this.color;
             
-            ctx.fillRect(this.location.x,this.location.y,app.calendar.CALENDAR_CONST.WIDTH,this.length*app.calendar.CALENDAR_CONST.HEIGHT);
+            ctx.fillRect(this.location.x,this.location.y,app.calendar.CALENDAR_CONST.WIDTH,this.length*app.calendar.CALENDAR_CONST.HEIGHT); 
+            
+            ctx.globalAlpha = 1.0;
+            ctx.drawImage(this.icon,this.location.x+app.game.GUI.PADDING,this.location.y+app.game.GUI.PADDING,32,32);
             
             //draw text
-            ctx.globalAlpha = 1.0;
             ctx.font = app.game.GUI.FONT.CALENDAR;
             ctx.fillStyle = app.game.GUI.FONT_COLOR;
-            ctx.fillText(name,this.location.x+app.game.GUI.PADDING,this.location.y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*1);
-            //ctx.fillText("Length: " + this.length + " hour(s)" ,this.location.x+app.game.GUI.PADDING,this.location.y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*2.1);
+            ctx.fillText(name,this.location.x+app.game.GUI.PADDING,this.location.y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*3.4);
             if(this.success){
-                ctx.fillText("S: " + this.success.string,this.location.x+app.game.GUI.PADDING,this.location.y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*2.1);
+                ctx.fillText("S: " + this.success.string,this.location.x+app.game.GUI.PADDING,this.location.y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*4.5);
             }
             if(this.failure){
-                ctx.fillText("F: " + this.failure.string,this.location.x+app.game.GUI.PADDING,this.location.y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*3.2);
+                ctx.fillText("F: " + this.failure.string,this.location.x+app.game.GUI.PADDING,this.location.y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*5.6);
             }
             
             //draw stroke
@@ -105,4 +113,12 @@ app.calendar = {
             };
         }
     },
+    
+    setup: function(){
+        this.ICONS.WORK = document.querySelector("#workIcon");
+        this.ICONS.LIFE = document.querySelector("#lifeIcon");
+        this.ICONS.MISC = document.querySelector("#miscIcon");
+        
+        Object.freeze(this.ICONS);
+    }
 };

@@ -7,6 +7,7 @@ var app = app || {};
     //initilizes modules on load
     window.onload = function(){
         Object.seal(app.calendar);
+        app.calendar.setup();
         app.game.calendar = app.calendar;
         
         Object.seal(app.sound);
