@@ -14,6 +14,10 @@ var app = app || {};
         app.sound.setup();
         app.game.sound = app.sound;
         
+        Object.seal(app.keys);
+        //app.keys.setup();
+        app.game.keys = app.keys;
+        
         Object.seal(app.game);
         app.game.setup();
     }
@@ -34,5 +38,13 @@ var app = app || {};
         if(app.game.gameState == app.game.GAME_STATES.PLAYING || app.game.gameState == app.game.GAME_STATES.GAME_OVER){
             app.game.changeGameState(app.game.GAME_STATES.PAUSED);
         }
+    }
+    
+    window.onkeydown = function(e){
+        app.keys.keyPressed(e.keyCode);
+    }
+    
+    window.onkeyup = function(e){
+        app.keys.keyReleased(e.keyCode);
     }
 }());
