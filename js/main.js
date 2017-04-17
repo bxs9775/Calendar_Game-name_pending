@@ -353,6 +353,8 @@ app.game = {
     drawHUD: function(){
         var ctx = this.ctx;
         ctx.save();
+        
+        
         if(this.gameState != this.GAME_STATES.PLAYING){
             ctx.fillStyle = "black";
             ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
@@ -384,6 +386,8 @@ app.game = {
                 ctx.fillText("* The round ends when all items are scheduled or time runs out. The game automatically starts the next round.",this.GUI.PADDING,(this.GUI.PADDING+this.GUI.BASE_FONT_SIZE)*6);
                 ctx.fillText("* The effects after the F (for Fail) activate after the round if the item is not scheduled.",this.GUI.PADDING,(this.GUI.PADDING+this.GUI.BASE_FONT_SIZE)*7);
                 ctx.fillText("* If Work or Life goes to or below 0 the game ends.",this.GUI.PADDING,(this.GUI.PADDING+this.GUI.BASE_FONT_SIZE)*8);
+                
+                ctx.fillText("* [Use Shift+Up and Shift+Down to change the volume]",this.GUI.PADDING,(this.GUI.PADDING+this.GUI.BASE_FONT_SIZE)*25);
                 break;
             case this.GAME_STATES.GAME_OVER:
                 ctx.textAlign = "center";
@@ -397,6 +401,7 @@ app.game = {
                 break;
         }
         
+        this.sound.drawHUD(this.ctx,this.deltaTime);
         ctx.restore();
     },
     

@@ -18,6 +18,8 @@ app.sound = function(){
     });
     var masterVolume = 0.33;
     
+    var drawAlpha = 0;
+    
     
     //Initializes the audio control elements
     //From the Boomshine project
@@ -58,10 +60,35 @@ app.sound = function(){
         if(masterVolume > 1){
             masterVolume = 1;
         }
-        console.log(masterVolume);
+        //console.log(masterVolume);
+        drawAlpha = 0.7;
         
 		bgAudio.volume = MAX_VOLUMES.BACKGROUND*masterVolume;
 		effectAudio.volume = MAX_VOLUMES.EFFECT*masterVolume;
+    }
+    
+    function drawHUD(ctx,deltaTime){
+        if(drawAlpha > 0){
+            ctx.save();
+        
+            ctx.globalAlpha = drawAlpha;
+            ctx.fillStyle = "blue";
+            
+            //update alpha
+            drawAlpha -= deltaTime/4;
+            
+            //draw dimensions
+            var width = ctx.canvas.width;
+            var height = ctx.canvas.height;
+            var center = (width-500)/2;
+            
+            //draw graphics
+            ctx.fillRect(center-10,height-80,4,40);
+            ctx.fillRect(center,height-80,500*masterVolume,40);
+            ctx.fillRect(center+510,height-80,4,40);
+            
+            ctx.restore();
+        }
     }
     
     //Allows certain methods and values to be accessed by other files
@@ -71,6 +98,7 @@ app.sound = function(){
         stopBGAudio: stopBGAudio,
         playEffect: playEffect,
         changeVolume: changeVolume,
+        drawHUD: drawHUD,
         EFFECTS: EFFECTS
     }
 }();
