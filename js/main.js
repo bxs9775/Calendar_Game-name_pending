@@ -8,8 +8,8 @@ app.game = {
     GUI: Object.freeze({
         BASE_FONT_SIZE: 14,
         FONT: Object.freeze({
-            GUI_FONT: "16pt Arial",
-            CALENDAR: "14pt Arial"
+            GUI_FONT: "16pt Open Sans",
+            CALENDAR: "14pt Open Sans"
         }),
         FONT_COLOR: "black",
         PADDING: 10

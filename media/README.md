@@ -9,3 +9,7 @@
 * briefcase.png made by [SimpleIcon](http://simpleicon.com/) from www.flaticon.com
 * man-and-woman-icon.png made by [AnonMoos](https://commons.wikimedia.org/wiki/User:AnonMoos) from https://commons.wikimedia.org
 * sand-clock.png made by [SimpleIcon](http://simpleicon.com/) from www.flaticon.com
+
+#### Fonts
+* PlayfairDisplaySC-Regular.ttf: Copyright (c) 2010-2012 by Claus Eggers Sørensen (es@forthehearts.net), with Reserved Font Name 'Playfair'
+* OpenSans-Regular.ttf: Digitized data copyright © 2010-2011, Google Corporation.
