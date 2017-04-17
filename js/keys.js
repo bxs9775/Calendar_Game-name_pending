@@ -1,4 +1,5 @@
 //keys.js
+//Took some inspiration from the Boomshine version of this code, but I tried to write my own implementation.
 "use strict";
 
 var app = app || {};

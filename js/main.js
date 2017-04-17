@@ -295,6 +295,14 @@ app.game = {
         
         this.calcDeltaTime();
         
+        var keyDown = this.keys.keyDown;
+        if(keyDown[this.keys.KEY.KEY_SHIFT] && keyDown[this.keys.KEY.KEY_UP]){
+            this.sound.changeVolume(0.5*this.deltaTime);
+        }
+        if(keyDown[this.keys.KEY.KEY_SHIFT] && keyDown[this.keys.KEY.KEY_DOWN]){
+            this.sound.changeVolume(-0.5*this.deltaTime);
+        }
+        
         switch(this.gameState){
             case this.GAME_STATES.PLAYING:
                 this.timeLeft -= this.deltaTime;
