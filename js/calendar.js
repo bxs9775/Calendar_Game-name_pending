@@ -65,12 +65,30 @@ app.calendar = {
         this.length = length;
         this.color = "Blue";
         this.icon = icon;
-        this.success = success;
+        //field for later developemnt
+        //this.success = success;
         this.failure = failure;
         this.beingDragged = false;
         this.scheduled = false;
-        //--OR--//
-        //this.timeslot = undefined;
+        
+        //console.dir(app);
+        
+        this.particles = new app.Emitter();
+        this.particles.red = 255;
+        this.particles.green = 215;
+        this.particles.blue = 0;
+        this.particles.minXspeed = this.particles.minYspeed = -0.6;
+        this.particles.maxXspeed = this.particles.maxYspeed = 0.6;
+        this.particles.startRadius =  2;
+        this.particles.lifetime = 100;
+        this.particles.decayRate = 0;
+        this.particles.expansionRate = 0.02;
+        this.particles.numParticles = 50;
+        this.particles.xRange = app.calendar.CALENDAR_CONST.WIDTH;
+        this.particles.yRange = app.calendar.CALENDAR_CONST.HEIGHT*this.length;
+        console.log(this.particles);
+        
+        this.particleTimer = 2;
         
         ///Draws this calendar item.
         this.draw = function(ctx){
@@ -89,9 +107,13 @@ app.calendar = {
             ctx.font = app.game.GUI.FONT.CALENDAR;
             ctx.fillStyle = app.game.GUI.FONT_COLOR;
             ctx.fillText(name,this.location.x+app.game.GUI.PADDING,this.location.y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*3.4);
+            
+            //The success code is for later develpoment
+            /*
             if(this.success){
                 ctx.fillText("S: " + this.success.string,this.location.x+app.game.GUI.PADDING,this.location.y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*4.5);
             }
+            */
             if(this.failure){
                 ctx.fillText("F: " + this.failure.string,this.location.x+app.game.GUI.PADDING,this.location.y+app.game.GUI.PADDING+app.game.GUI.BASE_FONT_SIZE*5.6);
             }
@@ -102,7 +124,12 @@ app.calendar = {
             ctx.strokeRect(this.location.x,this.location.y,app.calendar.CALENDAR_CONST.WIDTH,this.length*app.calendar.CALENDAR_CONST.HEIGHT);
             
             ctx.restore();
-        }
+            
+            if(this.scheduled && this.particleTimer > 0){
+                this.particles.updateAndDraw(ctx,this.getCenter());
+                this.particleTimer -= app.game.deltaTime;
+            }
+        };
         
         this.getRectangle = function(){
             return {
@@ -111,7 +138,16 @@ app.calendar = {
                 width: app.calendar.CALENDAR_CONST.WIDTH,
                 height: (app.calendar.CALENDAR_CONST.HEIGHT * this.length)
             };
-        }
+        };
+                
+        
+        this.getCenter = function(){
+            var calConst = app.calendar.CALENDAR_CONST;
+            return {
+                x: this.location.x + (calConst.WIDTH)/2,
+                y: this.location.y/* + (calConst.HEIGHT*this.length)/2*/
+            }
+        };
     },
     
     setup: function(){

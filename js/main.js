@@ -215,6 +215,7 @@ app.game = {
                 newAppointment = new this.calendar.CalendarItem(this.CONTENT.NAMES.LIFE.randomElement(),x,y,newLength,this.calendar.ICONS.LIFE,undefined,this.CONTENT.EFFECTS.LIFE_DEC_ONE);
                 break;
         }
+        
         Object.seal(newAppointment);
         return newAppointment;
     },
@@ -260,9 +261,12 @@ app.game = {
             var item = this.calendarInst.appointments[i];
             if(item.scheduled){
                 this.score++;
+                //Code for later development
+                /*
                 if(item.success){
                     item.success.action();
                 }
+                */
             }else{
                 if(item.failure){
                     item.failure.action();
@@ -467,9 +471,11 @@ app.game = {
             }
             
             if(spotOpen){
+                console.dir(cal.appointments[cal.selectedItem].getCenter());
                 cal.appointments[cal.selectedItem].scheduled = true;
                 cal.appointments[cal.selectedItem].location.x = this.calendarRect.x + calX * (this.calendar.CALENDAR_CONST.WIDTH+4)+4;
                 cal.appointments[cal.selectedItem].location.y = this.calendarRect.y + calY * (this.calendar.CALENDAR_CONST.HEIGHT+1)+4;
+                cal.appointments[cal.selectedItem].particles.createParticles(cal.appointments[cal.selectedItem].getCenter());
                 for(var i = 0; i < item.length; i++){
                     cal.array[calY+i][calX] = true;
                 }
